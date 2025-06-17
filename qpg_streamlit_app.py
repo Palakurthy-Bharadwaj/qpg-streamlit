@@ -24,7 +24,7 @@ openai_api_key = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key=openai_api_key)
 
 # API Endpoints
-TEXTRACT_API_URL = "https://lg186ta89c.execute-api.ap-south-1.amazonaws.com/prod/textract"
+TEXTRACT_API_URL = os.getenv("TEXTRACT_API_URL")
 
 def analyze_papers_with_syllabus(paper_texts, subject_name, syllabus, course_objectives):
     """Enhanced GPT analysis with syllabus and COs"""
