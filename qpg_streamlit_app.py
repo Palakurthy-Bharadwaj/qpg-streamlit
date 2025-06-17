@@ -1087,38 +1087,88 @@ def main():
         if key not in st.session_state:
             st.session_state[key] = None
     
+    # Replace the "Step 1: Subject Information" section in your main() function:
+
     # Step 1: Subject Information
     st.header("📚 Step 1: Subject Information")
+    
+    # Default prefilled content
+    DEFAULT_SUBJECT_NAME = "Data Structures"
+    
+    DEFAULT_SYLLABUS = """UNIT – I (Text book 1, Chapter 1, 2 & 13)
+    Algorithms: Preliminaries of algorithm, Algorithm analysis and complexity. Recursion: Definition, Design Methodology and Implementation of recursive algorithms, types of recursion, recursive algorithms for factorial function, GCD computation, Fibonacci sequence, Towers of Hanoi, Searching Techniques: Linear Search, Binary Search.
+    
+    UNIT – II (Text book 1, Chapter 12)
+    Sorting Techniques: Basic concepts, Insertion Sort, Selection Sort, Bubble Sort, Quick Sort, Merge Sort and Counting Sort. Hashing: Hash table representations, Collision resolution: separate chaining, open addressing, linear probing, quadratic probing, Double hashing, Rehashing.
+    
+    UNIT – III (Text book 1, Chapter 3 & 4)
+    Stacks: Basic Stack Operations, Representation of a Stack using Arrays, Stack Applications: Reversing a list, Infix to postfix Transformation, Evaluating Postfix Expression. Queues: Basic Queues Operations, Implementation of Queue Operations using arrays, Application of Queues: Round Robin Algorithm, Circular Queues.
+    
+    UNIT – IV (Text book 1, Chapter 5)
+    Linked Lists: Introduction, single linked list, representation of a linked list in memory, Operations on a single linked list, merging two single linked lists into one list, reversing a single linked list, advantages and disadvantages of single linked list, Circular linked list, Double linked list.
+    
+    UNIT –V (Text book 1, Chapter 6, 7 & 11)
+    Trees: Basic tree concepts, Binary Tree: Properties, Representation of Binary Trees – Array Representation and Linked Representation, Binary Tree Traversals (recursive), Creation of binary tree from in-order and pre/post-order traversals, Binary Search Tree Operations and Implementation. Graphs: Definition, Properties, Representation of Un-Weighted Graphs, Weighted Graphs, Graph Search Methods: BFS, DFS, and Implementation."""
+    
+    DEFAULT_COURSE_OBJECTIVES = """CO1: Interpret the performance of linear and binary searching algorithms based on recursive functions, time and space complexities. (BL-2)
+    
+    CO2: Implement sorting, hashing and collision resolution techniques. (BL-2)
+    
+    CO3: Develop linear data structures for stacks, queues using arrays. (BL-3)
+    
+    CO4: Develop singly, doubly & circular linked list data structures. (BL-3)
+    
+    CO5: Illustrate binary tree and binary search trees and Understand graph types, representations and graph traversal algorithms. (BL-3)"""
+    
+    DEFAULT_SUBJECT_CODE = "CSE201"
     
     col1, col2 = st.columns(2)
     
     with col1:
         subject_name = st.text_input(
             "Subject Name",
+            value=DEFAULT_SUBJECT_NAME,  # Prefilled value
             placeholder="e.g., Engineering Mechanics",
             help="Enter the complete subject name"
         )
         
         syllabus = st.text_area(
             "Complete Syllabus",
-            height=200,
-            placeholder="Enter the complete syllabus with all topics, units, and sub-topics...\n\nExample:\nUnit 1: Statics\n- Force systems\n- Equilibrium\n- Friction\n\nUnit 2: Dynamics\n- Kinematics\n- Kinetics\n...",
+            value=DEFAULT_SYLLABUS,  # Prefilled value
+            height=400,  # Increased height to accommodate the content
+            placeholder="Enter the complete syllabus with all topics, units, and sub-topics...",
             help="Paste the complete syllabus including all units and topics - this will be used for generating questions across ALL topics"
         )
     
     with col2:
         course_objectives = st.text_area(
             "Course Objectives (COs)",
-            height=200,
-            placeholder="Enter all course objectives...\n\nExample:\nCO1: Understand the principles of statics and force systems\nCO2: Apply equilibrium concepts to solve engineering problems\nCO3: Analyze dynamic systems and motion\nCO4: Design solutions using mechanics principles\n...",
+            value=DEFAULT_COURSE_OBJECTIVES,  # Prefilled value
+            height=300,  # Increased height to accommodate the content
+            placeholder="Enter all course objectives...",
             help="List all course objectives that should be covered"
         )
         
         csm_id = st.text_input(
             "Subject Code",
+            value=DEFAULT_SUBJECT_CODE,  # Prefilled value
             placeholder="e.g., ME101",
             help="Enter the subject code for reference"
         )
+        
+        # Add a clear button for convenience
+        if st.button("🗑️ Clear All Fields", type="secondary", use_container_width=True):
+            st.rerun()
+        
+        # Add an info box about the prefilled content
+        st.info("💡 **Demo Content Loaded!** The fields above are pre-filled with Data Structures content for easy testing. You can modify or replace with your own content.")
+    
+    # Optional: Add a toggle to show/hide the prefilled content
+    with st.expander("📝 About the Prefilled Content"):
+        st.write("**Subject:** Data Structures")
+        st.write("**Units:** 5 comprehensive units covering algorithms, sorting, data structures, and graphs")
+        st.write("**Course Outcomes:** 5 COs aligned with Bloom's taxonomy levels")
+        st.write("**Purpose:** This content is prefilled to demonstrate the app's capabilities. Feel free to replace with your own syllabus and course objectives.")
     
     # Step 2: Upload Papers
     if subject_name and syllabus and course_objectives:
