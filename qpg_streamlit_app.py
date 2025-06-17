@@ -1159,9 +1159,24 @@ def main():
                         col1, col2 = st.columns(2)
                         for i, result in enumerate(results):
                             with col1 if i == 0 else col2:
-                                st.write(f"**📄 {result['pdf_file']}**")
-                                st.write(f"✅ Status: {result['status']}")
-                                st.write(f"📊 Characters: {result['text_length']}")
+                                # Use 'file_name' instead of 'pdf_file'
+                                st.write(f"**📄 {result.get('file_name', 'Unknown File')}**")
+                                # Use 'final_status' if available, otherwise 'status'
+                                status = result.get('final_status', result.get('status', 'Unknown'))
+                                st.write(f"✅ Status: {status}")
+                                st.write(f"📊 Characters: {result.get('text_length', 0)}")
+                                
+                                # Show any errors if present
+                                if 'error' in result:
+                                    st.error(f"❌ Error: {result['error']}")
+                    else:
+                        st.warning(f"Expected 2 results, got {len(results)}")
+                        # Display whatever results we have
+                        for i, result in enumerate(results):
+                            st.write(f"**File {i+1}:** {result.get('file_name', 'Unknown')}")
+                            st.write(f"**Status:** {result.get('final_status', result.get('status', 'Unknown'))}")
+                            if 'error' in result:
+                                st.error(f"Error: {result['error']}")
     
     # Step 4: Analyze Structure
     if st.session_state.textract_output:
@@ -1170,24 +1185,36 @@ def main():
         if st.button("🔬 Analyze Papers with Complete Syllabus", type="primary", use_container_width=True):
             textract_results = st.session_state.textract_output.get('results', [])
             
-            if len(textract_results) == 2:
+            if len(textract_results) >= 2:
+                # Take only the first 2 results if more than 2
                 paper_texts = [
                     {
-                        'filename': result['pdf_file'],
-                        'extracted_text': result['extracted_text'],
-                        'text_length': result['text_length']
+                        'filename': result.get('file_name', f'Paper_{i+1}'),  # Use 'file_name' instead of 'pdf_file'
+                        'extracted_text': result.get('extracted_text', ''),
+                        'text_length': result.get('text_length', 0)
                     }
-                    for result in textract_results
+                    for i, result in enumerate(textract_results[:2])  # Only take first 2
                 ]
                 
-                with st.spinner("🤖 Analyzing papers for structure patterns and syllabus mapping..."):
-                    structure_analysis = analyze_papers_with_syllabus(
-                        paper_texts, subject_name, syllabus, course_objectives
-                    )
+                # Only proceed if we have valid extracted text
+                valid_papers = [p for p in paper_texts if p['extracted_text'] and len(p['extracted_text'].strip()) > 0]
                 
-                if structure_analysis:
-                    st.session_state.structure_analysis = structure_analysis
-                    st.success("✅ Structure analysis completed!")
+                if len(valid_papers) >= 2:
+                    with st.spinner("🤖 Analyzing papers for structure patterns and syllabus mapping..."):
+                        structure_analysis = analyze_papers_with_syllabus(
+                            valid_papers[:2], subject_name, syllabus, course_objectives  # Use only first 2 valid papers
+                        )
+                    
+                    if structure_analysis:
+                        st.session_state.structure_analysis = structure_analysis
+                        st.success("✅ Structure analysis completed!")
+                else:
+                    st.error("❌ Need at least 2 papers with valid extracted text to proceed with analysis")
+                    st.write("**Available papers:**")
+                    for i, paper in enumerate(paper_texts):
+                        st.write(f"• {paper['filename']}: {paper['text_length']} characters")
+            else:
+                st.error(f"❌ Need at least 2 extracted papers, got {len(textract_results)}")
     
     # Step 5: Calibrate Parameters
     if st.session_state.structure_analysis:
