@@ -494,10 +494,10 @@ def upload_files_to_textract(file1, file2, csm_id="default_subject"):
             'paper1': (file1.name, file1.getvalue(), 'application/pdf'),
             'paper2': (file2.name, file2.getvalue(), 'application/pdf')
         }
-        data = {'csm_id': csm_id}
+        data = {'csm_id': csm_id, 'mode':'1'}
         
         with st.spinner("🔍 Extracting text using Textract... This may take a few minutes."):
-            response = requests.post(TEXTRACT_API_URL, files=files, data=data, timeout=300)
+            response = requests.post(TEXTRACT_API_URL, files=files, data=data, timeout=500)
         
         if response.status_code == 200:
             response_data = response.json()
