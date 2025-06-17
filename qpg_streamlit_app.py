@@ -1156,14 +1156,6 @@ def main():
             help="Enter the subject code for reference"
         )
         
-        # Add a clear button for convenience
-        if st.button("🗑️ Clear All Fields", type="secondary", use_container_width=True):
-            # Clear session state to force empty fields
-            for key in ['subject_name', 'syllabus', 'course_objectives', 'csm_id']:
-                if key in st.session_state:
-                    del st.session_state[key]
-            st.rerun()
-        
         # Add an info box about the prefilled content
         st.info("💡 **Demo Content Loaded!** The fields above are pre-filled with Data Structures content for easy testing. You can modify or replace with your own content.")
     
